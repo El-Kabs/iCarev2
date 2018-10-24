@@ -1,0 +1,53 @@
+static navigationOptions = {
+  header: null,
+};
+
+state = {
+  hasCameraPermission: null
+};
+
+componentDidMount() {
+  console.log("Montó");
+    this._requestCameraPermission();
+  }
+
+  _requestCameraPermission = async () => {
+    console.log("Permisos");
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({
+      hasCameraPermission: status === 'granted',
+    });
+    console.log(this.status);
+  };
+
+
+_handleBarCodeRead = ({data}) => {
+ var lectura = JSON.parse(data);
+ console.log(data);
+ firebase
+   .database()
+   .ref('/json')
+   .once('value')
+   .then(function(snapshot) {
+     var snap = snapshot.val();
+     if (lectura.id === snap.id) {
+       console.log(snap);
+       this.props.navigation.navigate('Usuario', { datos: snap });
+     }
+   });
+}
+
+render() {
+  return (
+  <View>
+      {this.state.hasCameraPermission === null ?
+        <Text>Requesting for camera permission</Text> :
+        this.state.hasCameraPermission === false ?
+          <Text>Camera permission is not granted</Text> :
+          <BarCodeScanner
+            onBarCodeRead={this._handleBarCodeRead}
+          />
+      }
+    </View>
+  )
+}
