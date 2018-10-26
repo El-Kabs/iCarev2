@@ -65,6 +65,7 @@ class HomeScreen extends Component {
   _handleBarCodeRead = result => {
     const { navigate } = this.props.navigation;
     var lectura = JSON.parse(result.data);
+    console.log(lectura)
     firebase
       .database()
       .ref('/json/')
@@ -204,7 +205,6 @@ class EditarUsuarioScreen extends Component {
     const { navigation } = this.props;
     const { navigate } = this.props.navigation;
     const datos = navigation.getParam('datos', '{"id": 0}');
-    console.log(datos);
     const Form = t.form.Form;
     var Vinicial = {
       Nombre: datos.Nombre,
@@ -333,7 +333,10 @@ class FormularioScreen extends Component {
     const llave = datos.llave
     const Form = t.form.Form;
     const formato = datos.formato;
-    var Vinicial = datos.formato;
+    var firstKey = Object.keys(datos.formato)[0];
+    var Vinicial = datos.formato[firstKey];
+    console.log("Formulario")
+    console.log(Vinicial)
     const User = t.struct({
       DificultadesConLaDucha: t.String,
       VaAlBañoSolo: t.String,
