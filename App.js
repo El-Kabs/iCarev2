@@ -324,7 +324,6 @@ class FormularioScreen extends Component {
   state = {
     hasCameraPermission: null,
     lastScannedUrl: null,
-    vInicial: null
   };
 
   render() {
@@ -336,7 +335,6 @@ class FormularioScreen extends Component {
     const formato = datos.formato;
     var firstKey = Object.keys(datos.formato)[0];
     var Vinicial = datos.formato[firstKey].formato;
-    this.setState({vInicial: Vinicial})
     console.log("Formulario")
     const User = t.struct({
       DificultadesConLaDucha: t.String,
@@ -371,7 +369,7 @@ class FormularioScreen extends Component {
           <Form
             ref={c => this._form = c}
             type={User}
-            value={this.state.vInicial} />
+            value={Vinicial} />
           <Button
             title="Guardar Información"
             onPress={() => this._handleSubmit(User)}
