@@ -336,7 +336,7 @@ class FormularioScreen extends Component {
     var firstKey = Object.keys(datos.formato)[0];
     var Vinicial = datos.formato[firstKey];
     console.log("Formulario")
-    console.log(Vinicial)
+    console.log(Vinicial.formato)
     const User = t.struct({
       DificultadesConLaDucha: t.String,
       VaAlBañoSolo: t.String,
