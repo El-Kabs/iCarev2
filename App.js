@@ -324,6 +324,7 @@ class FormularioScreen extends Component {
   state = {
     hasCameraPermission: null,
     lastScannedUrl: null,
+    vInicial: null
   };
 
   render() {
@@ -334,9 +335,9 @@ class FormularioScreen extends Component {
     const Form = t.form.Form;
     const formato = datos.formato;
     var firstKey = Object.keys(datos.formato)[0];
-    var Vinicial = datos.formato[firstKey];
+    var Vinicial = datos.formato[firstKey].formato;
+    this.setState({vInicial: Vinicial})
     console.log("Formulario")
-    console.log(Vinicial.formato)
     const User = t.struct({
       DificultadesConLaDucha: t.String,
       VaAlBañoSolo: t.String,
@@ -369,7 +370,8 @@ class FormularioScreen extends Component {
         <ScrollView>
           <Form
             ref={c => this._form = c}
-            type={User} />
+            type={User}
+            value={this.state.vInicial} />
           <Button
             title="Guardar Información"
             onPress={() => this._handleSubmit(User)}
