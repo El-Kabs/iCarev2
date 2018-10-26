@@ -167,10 +167,10 @@ class AgregarUsuarioScreen extends Component {
         idN = Object.keys(snap).length;
         var xd = JSON.parse(JSON.stringify(value));
         xd.id = "" + idN;
-        xd.especialidades = [{ "nombre": "cardiologia", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "oftalmologia", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "geriatria", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "general", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "especiales", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }]
+        xd.especialidades = [{ "nombre": "cardiologia", "notas": "nota", "examenes": [{ "url": "https://firebasestorage.googleapis.com/v0/b/icare-a350b.appspot.com/o/xd.png?alt=media&token=79a9e593-2d4b-459f-87fd-6a1a1e53e065" }] }, { "nombre": "oftalmologia", "notas": "nota", "examenes": [{ "url": "https://firebasestorage.googleapis.com/v0/b/icare-a350b.appspot.com/o/xd.png?alt=media&token=79a9e593-2d4b-459f-87fd-6a1a1e53e065" }] }, { "nombre": "geriatria", "notas": "nota", "examenes": [{ "url": "https://firebasestorage.googleapis.com/v0/b/icare-a350b.appspot.com/o/xd.png?alt=media&token=79a9e593-2d4b-459f-87fd-6a1a1e53e065" }] }, { "nombre": "general", "notas": "nota", "examenes": [{ "url": "https://firebasestorage.googleapis.com/v0/b/icare-a350b.appspot.com/o/xd.png?alt=media&token=79a9e593-2d4b-459f-87fd-6a1a1e53e065" }] }, { "nombre": "especiales", "notas": "nota", "examenes": [{ "url": "https://firebasestorage.googleapis.com/v0/b/icare-a350b.appspot.com/o/xd.png?alt=media&token=79a9e593-2d4b-459f-87fd-6a1a1e53e065" }] }]
         xd.medicamentos = [{"nombre": " ", "dosis": " "}]
         firebase.database().ref("/json").push(xd).then(function () {
-          Alert.alert("Usuario agregado exitosamente.")
+          Alert.alert("Usuario agregado exitosamente con id: "+idN);
         }
         );
       });
@@ -240,37 +240,43 @@ class EditarUsuarioScreen extends Component {
 
     }
     return (
+      <ScrollView>
       <View style={styles.container}>
-        <ToolbarAndroid style={{
-          height: StatusBar.currentHeight,
-          backgroundColor: '#00701a',
-          elevation: 4
-        }} />
-        <Text h1 style={{fontSize:40}}> Usuario </Text>
-        <Text h1 style={{fontSize:20, marginTop: height/8}}>Nombre: {JSON.stringify(datos.Nombre)}</Text>
-        <Text h1 style={{fontSize:20, marginTop: height/24}}>Edad: {JSON.stringify(datos.Edad)}</Text>
-        <Text h1 style={{fontSize:20, marginTop: height/24}}>EPS: {JSON.stringify(datos.EPS)}</Text>
-        <Text h1 style={{fontSize:20, marginTop: height/24}}>Cedula: {JSON.stringify(datos.Cedula)}</Text>
-        <TouchableOpacity onPress={() => navigate('Medicamentos', { datos: datos })}>
-          <Text h1 style={{fontSize:20, marginTop: height/24, color:'#ffa726' }}> Medicamentos </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigate('Formulario', { datos: datos })}>
-          <Text h1 style={{fontSize:25, marginTop: 10, color:'#ffa726'}} > Formulario </Text>
-        </TouchableOpacity>
-        <FlatList
-          data={datos.especialidades}
-          renderItem={({ item }) => <TouchableOpacity onPress={() => navigate('Formato', { datos: datos, especiali: item.nombre })}><Text style={{marginTop:1, color:'#ffa726', fontWeight:'bold'}}> - {(item.nombre).charAt(0).toUpperCase() + (item.nombre).slice(1)}</Text></TouchableOpacity>}
-          keyExtractor={({ id }, index) => id}
-        />
+        
+          <Text h1 style={{fontSize:40}}> Usuario </Text>
+          <Text h1 style={{fontSize:20, marginTop: height/8}}>Nombre: {JSON.stringify(datos.Nombre)}</Text>
+          <Text h1 style={{fontSize:20, marginTop: height/24}}>Edad: {JSON.stringify(datos.Edad)}</Text>
+          <Text h1 style={{fontSize:20, marginTop: height/24}}>EPS: {JSON.stringify(datos.EPS)}</Text>
+          <Text h1 style={{fontSize:20, marginTop: height/24}}>Cedula: {JSON.stringify(datos.Cedula)}</Text>
+          <TouchableOpacity onPress={() => navigate('Medicamentos', { datos: datos })}>
+            <Text h1 style={{fontSize:20, marginTop: height/24, color:'#ffa726' }}> Medicamentos </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigate('Formulario', { datos: datos })}>
+            <Text h1 style={{fontSize:25, marginTop: 10, color:'#ffa726'}} > Formulario </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: 1,
+            }}
+          />
+          <Text h1 style={{fontSize:20}}> Especialidades: </Text>
+          <FlatList
+            data={datos.especialidades}
+            renderItem={({ item }) => <TouchableOpacity onPress={() => navigate('Formato', { datos: datos, especiali: item.nombre })}><Text style={{marginTop:1, color:'#ffa726', fontWeight:'bold'}}> - {(item.nombre).charAt(0).toUpperCase() + (item.nombre).slice(1)}</Text></TouchableOpacity>}
+            keyExtractor={({ id }, index) => id}
+          />
 
 
-        <TouchableOpacity style={(styles.guardarUsuario)}
-      
-          onPress={() => this._handleSubmit}
-        >
-        <Text h1 style={{fontSize:30, textAlign:'center'}}> Guardar </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={(styles.guardarUsuario)}
+        
+            onPress={() => this._handleSubmit}
+          >
+          <Text h1 style={{fontSize:30, textAlign:'center'}}> Guardar </Text>
+          </TouchableOpacity>
+        
       </View>
+      </ScrollView>
     );
 
   }
@@ -316,6 +322,7 @@ class NotasScreen extends Component {
     const { navigation } = this.props;
     const { navigate } = this.props.navigation;
     return (
+      <ScrollView>
       <View style={(styles.usuarioContainer)}>
       <Text h1 style={{ fontSize:40, textAlign:'center'}}> Notas Adicionales</Text>
         <TextInput style={(styles.textInputNotas)} editable={true} onChangeText={(text)  => this.setState({ text })}
@@ -326,6 +333,7 @@ class NotasScreen extends Component {
           </Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     )
   }
 }
@@ -334,7 +342,12 @@ class FormularioScreen extends Component {
   _handleSubmit = (user) => {
     var value = this._form.getValue();
     const datos = this.props.navigation.getParam('datos', '{"id": 0}');
-    var firstKey = Object.keys(datos.formato)[0];
+    var firstKey = ""
+    if(datos.formato===undefined){
+      firstKey = ""
+    }else{
+      firstKey = Object.keys(datos.formato)[0];
+    }
     var ruta = "/json/" + datos.llave + "/formato/" + firstKey
     console.log(ruta)
     firebase.database().ref(ruta).set({ formato: value });
@@ -352,9 +365,16 @@ class FormularioScreen extends Component {
     const llave = datos.llave
     const Form = t.form.Form;
     const formato = datos.formato;
-    var firstKey = Object.keys(datos.formato)[0];
+    var firstKey = "";
+    console.log(datos.formato)
+    if(datos.formato===undefined){
+      firstKey = ""
+    }
+    else{
+      firstKey = Object.keys(datos.formato)[0];
+    }
     var Vinicial = ""
-    if(firstKey != undefined){
+    if(firstKey !== ""){
       Vinicial = datos.formato[firstKey].formato;
     }
     console.log("Formulario")
@@ -702,11 +722,11 @@ class MedicamentosScreen extends Component {
     firebase.database().ref(ruta).push({ nombre: this.state.nombre, dosis: this.state.dosis }).then(function () {
       agregado.push(
         <View>
-          <Text>
-            {nombrebb}
+          <Text style={{textAlign:'center', marginTop:height/40}}>
+            {nombrebb},
           </Text>
-          <Text>
-            {dosisbb}
+          <Text style={{textAlign:'center', marginTop:height/40}}>
+             {dosisbb}
           </Text>
         </View>
       )
@@ -731,27 +751,27 @@ class MedicamentosScreen extends Component {
       <View style={(styles.medicamentosContainer)}>
       <Text h1 style={{fontSize:45, marginTop: height/24, textAlign:'center'}} >Medicamentos</Text>
       <Text h1 style={{textAlign:'center', fontWeight:'bold'}}> "Medicamento" , "Dosis"</Text>
-        <FlatList
-          data={medicamentos}
-          renderItem={({ item }) => <Text style={{textAlign:'center', marginTop:height/40}}>{item.nombre}, {item.dosis}</Text>}
-          keyExtractor={({ id }, index) => id}
-        />
+      <TouchableOpacity onPress={() => this.addTextInput(this.state.textInput.length)} >
+          <Text style={{textAlign:'center', fontWeight:'bold'}}>
+            Agregar medicamento
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.guardar()} >
+          <Text style={{textAlign:'center', fontWeight:'bold'}}>
+            Guardar
+          </Text>
+        </TouchableOpacity>
         {this.state.textInput.map((value, index) => {
           return value
         })}
         {this.state.agregado.map((value, index) => {
           return value
         })}
-        <TouchableOpacity onPress={() => this.addTextInput(this.state.textInput.length)} >
-          <Text>
-            Agregar medicamento
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.guardar()} >
-          <Text>
-            Guardar
-          </Text>
-        </TouchableOpacity>
+        <FlatList
+          data={medicamentos}
+          renderItem={({ item }) => <Text style={{textAlign:'center', marginTop:height/40}}>{item.nombre}, {item.dosis}</Text>}
+          keyExtractor={({ id }, index) => id}
+        />
       </View>
     )
   }
