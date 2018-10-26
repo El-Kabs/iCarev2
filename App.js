@@ -15,7 +15,10 @@ import {
   TextInput,
   ScrollView,
   Image,
-  Switch
+  Switch,
+  Notifications,
+  TimePickerAndroid,
+  Constants
 } from 'react-native';
 import { BarCodeScanner, Camera, Permissions, ImagePicker } from 'expo';
 import {
@@ -23,9 +26,11 @@ import {
   TabNavigator,
   TabBarBottom,
 } from 'react-navigation';
+import DatePicker from 'react-native-datepicker'
 import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
 import uuid from 'react-native-uuid';
+import moment from 'moment';
 
 var config = {
   apiKey: "AIzaSyBaDFN9ive_WcDv22fZi8ZS_XFxhVTigyI",
@@ -157,8 +162,8 @@ class AgregarUsuarioScreen extends Component {
         idN = Object.keys(snap).length;
         var xd = JSON.parse(JSON.stringify(value));
         xd.id = "" + idN;
-        xd.especialidades = [{ "nombre": "cardiologia", "notas": "nota", "examenes":[{"url": "https://www.etsy.com/images/grey.gif"}] }, { "nombre": "oftalmologia", "notas": "nota", "examenes":[{"url": "https://www.etsy.com/images/grey.gif"}] }, { "nombre": "geriatria", "notas": "nota", "examenes":[{"url": "https://www.etsy.com/images/grey.gif"}] }, { "nombre": "general", "notas": "nota" , "examenes":[{"url": "https://www.etsy.com/images/grey.gif"}]}, { "nombre": "especiales", "notas": "nota", "examenes":[{"url": "https://www.etsy.com/images/grey.gif"}] }]
-        xd.medicamentos = []
+        xd.especialidades = [{ "nombre": "cardiologia", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "oftalmologia", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "geriatria", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "general", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }, { "nombre": "especiales", "notas": "nota", "examenes": [{ "url": "https://www.etsy.com/images/grey.gif" }] }]
+        xd.medicamentos = [{"nombre": " ", "dosis": " "}]
         firebase.database().ref("/json").push(xd).then(function () {
           Alert.alert("Usuario agregado exitosamente.")
         }
@@ -317,8 +322,10 @@ class FormularioScreen extends Component {
   _handleSubmit = (user) => {
     var value = this._form.getValue();
     const datos = this.props.navigation.getParam('datos', '{"id": 0}');
-    var ruta = "/json/" + datos.llave + "/formato"
-    firebase.database().ref(ruta).push({ formato: value});
+    var firstKey = Object.keys(datos.formato)[0];
+    var ruta = "/json/" + datos.llave + "/formato/" + firstKey
+    console.log(ruta)
+    firebase.database().ref(ruta).set({ formato: value });
   }
 
   state = {
@@ -334,7 +341,10 @@ class FormularioScreen extends Component {
     const Form = t.form.Form;
     const formato = datos.formato;
     var firstKey = Object.keys(datos.formato)[0];
-    var Vinicial = datos.formato[firstKey].formato;
+    var Vinicial = ""
+    if(firstKey != undefined){
+      Vinicial = datos.formato[firstKey].formato;
+    }
     console.log("Formulario")
     const User = t.struct({
       DificultadesConLaDucha: t.String,
@@ -553,6 +563,74 @@ class CamaraScreen extends Component {
 
 class MedicamentosScreen extends Component {
 
+
+  notifer(medicamento){
+    //   Keyboard.dismiss();
+    var now = new Date()
+    var dia = now.getDate();
+    var mes = now.getMonth();
+    mes = parseInt(mes)+1
+    if(mes<10){
+      mes = "0"+mes
+    }
+    var anio = now.getFullYear()
+    var fecha = anio+"-"+mes+"-"+dia;
+    var arr = this.state.time.split(":")
+    var timeAndDate = fecha+" "+this.state.time
+    console.log(timeAndDate)
+    var m = moment(timeAndDate).unix()
+
+    let dateStr = fecha,
+      timeStr = this.state.time,
+      date = moment(dateStr),
+      time = moment(timeStr, 'HH:mm');
+
+    date.set({
+      hour: time.get('hour'),
+      minute: time.get('minute'),
+      second: time.get('second')
+    });
+    date = date.unix()
+    console.log(date);
+       const localNotification = {
+           title: "Medicamento: "+medicamento,
+           body: 'Recordatorio de medicamento',
+           sound:true,
+           priority:'high',// (optional) (min | low | high | max) 
+           vibrate:[0,100],
+          repeat: 'no-repeat',
+       };
+
+       const schedulingOptions = {
+           time: date
+       }
+
+       // Notifications show only when app is not active.
+       // (ie. another app being used or device's screen is locked)
+       
+       Expo.Notifications.scheduleLocalNotificationAsync(localNotification, schedulingOptions)
+       Alert.alert("Alarma creada.")
+   }
+
+   handleNotification() {
+       console.warn('ok! got your notif');
+   }
+
+   async componentDidMount() {
+       // We need to ask for Notification permissions for ios devices
+       let result = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+       if (Constants.isDevice && result.status === 'granted') {
+           console.log('Notification permissions granted.')
+       }
+
+       // If we want to do something with the notification when the app
+       // is active, we need to listen to notification events and 
+       // handle them in a callback
+       Notifications.addListener(this.handleNotification);
+       this.notifer()
+   }
+
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
@@ -560,7 +638,8 @@ class MedicamentosScreen extends Component {
     agregado: [],
     nombre: '',
     dosis: '',
-    medicamentos: null
+    medicamentos: null,
+    time: '13:28',
   };
 
   static navigationOptions = {
@@ -572,6 +651,7 @@ class MedicamentosScreen extends Component {
   }
 
   addTextInput = (key) => {
+    let _this = this;
     let textInput = this.state.textInput;
     if (textInput.length === 0) {
       textInput.push(
@@ -580,6 +660,16 @@ class MedicamentosScreen extends Component {
           <TextInput key={key} onChangeText={(nombre) => this.setState({ nombre })} />
           <Text>Dosis: </Text>
           <TextInput key={key} onChangeText={(dosis) => this.setState({ dosis })} />
+          <DatePicker
+            style={{ width: 200 }}
+            date={this.state.time}
+            mode="time"
+            format="HH:mm"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            minuteInterval={10}
+            onDateChange={(time) => { this.setState({ time: time }); }}
+          />
         </View>
       );
       this.setState({ textInput })
@@ -608,10 +698,13 @@ class MedicamentosScreen extends Component {
       _this.setState({ agregado })
       let textInput = []
       _this.setState({ textInput })
-    })
+    });
+    this.notifer(nombrebb);
+    console.log("Alarma disparada")
   }
 
   render() {
+    const { selectedHours, selectedMinutes } = this.state;
     const { navigation } = this.props;
     const { navigate } = this.props.navigation;
     const datos = navigation.getParam('datos', '{"id": 0}');
