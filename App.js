@@ -27,6 +27,7 @@ import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
 import uuid from 'react-native-uuid';
 
+
 var config = {
   apiKey: "AIzaSyBaDFN9ive_WcDv22fZi8ZS_XFxhVTigyI",
   authDomain: "icare-a350b.firebaseapp.com",
@@ -35,14 +36,16 @@ var config = {
   storageBucket: "icare-a350b.appspot.com",
   messagingSenderId: "696032112369"
 };
+var width = Dimensions.get('window').width
+var height = Dimensions.get('window').height
+
+t.form.Form.stylesheet.textbox.normal.borderColor = '#ca9b52'
 
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
 var database = firebase.database();
-
-var storageRef = firebase.storage().ref();
 
 class HomeScreen extends Component {
 
@@ -120,25 +123,27 @@ class HomeScreen extends Component {
   }
 }
 class LoginScreen extends Component {
-
+  static navigationOptions = {
+    title: "Inicio",
+    header: null,
+  }
   render() {
     const { navigation } = this.props;
     const { navigate } = this.props.navigation;
     const datos = navigation.getParam('datos', '{"id": 0}');
     return (
-      <View>
-        <ToolbarAndroid style={{
-          height: StatusBar.currentHeight,
-          backgroundColor: '#00701a',
-          elevation: 4
-        }} />
-        <Button title="Agregar Usuario" onPress={() => navigate('AgregarUsuario')}>
-
-        </Button>
-        <Button title="Cámara" onPress={() => navigate('Home')}>
-        </Button>
-        <Button title="Formulario" onPress={() => navigate('Formulario')}>
-        </Button>
+      <View style={(styles.inicio)}>
+        
+        <View style={(styles.botonesInicio)}>
+        <Image style={(styles.iconologo)} source={require('./icono.png')} />
+        <TouchableOpacity style={(styles.btnInicio)} onPress={() => navigate('AgregarUsuario')}>
+          <Text h1 style={{fontSize:25 , textAlign:'center'}}> Agregar Usuario</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={(styles.btnInicio)} onPress={() => navigate('Home')}>
+          <Text h1 style={{fontSize:25}}>Cámara</Text>
+        </TouchableOpacity>
+        
+        </View>
       </View>
     );
   }
@@ -185,14 +190,17 @@ class AgregarUsuarioScreen extends Component {
           backgroundColor: '#00701a',
           elevation: 4
         }} />
-        <ScrollView>
-          <Form
+        <Text h1 style={{fontSize:45, marginTop: height/24}}> Datos Básicos</Text>
+        <ScrollView style={{width:width}}>
+          <View style={(styles.formAgregar)}> 
+          <Form 
             ref={c => this._form = c}
             type={User} />
-          <Button
-            title="Agregar Paciente"
-            onPress={() => this._handleSubmit(User)}
-          />
+          <TouchableOpacity style={(styles.botonAgregarUsuario)}
+            onPress={() => this._handleSubmit(User)}>
+            <Text h1 style={{fontSize:25, textAlign:'center' ,marginTop:3, color:'#000000'}}> Agregar </Text>
+          </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
     );
@@ -233,27 +241,30 @@ class EditarUsuarioScreen extends Component {
           backgroundColor: '#00701a',
           elevation: 4
         }} />
-        <Text>Nombre: {JSON.stringify(datos.Nombre)}</Text>
-        <Text>Edad: {JSON.stringify(datos.Edad)}</Text>
-        <Text>EPS: {JSON.stringify(datos.EPS)}</Text>
-        <Text>Cedula: {JSON.stringify(datos.Cedula)}</Text>
+        <Text h1 style={{fontSize:40}}> Usuario </Text>
+        <Text h1 style={{fontSize:20, marginTop: height/8}}>Nombre: {JSON.stringify(datos.Nombre)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>Edad: {JSON.stringify(datos.Edad)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>EPS: {JSON.stringify(datos.EPS)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>Cedula: {JSON.stringify(datos.Cedula)}</Text>
         <TouchableOpacity onPress={() => navigate('Medicamentos', { datos: datos })}>
-          <Text> Medicamentos </Text>
+          <Text h1 style={{fontSize:20, marginTop: height/24, color:'#ffa726' }}> Medicamentos </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigate('Formulario', { datos: datos })}>
-          <Text> Formulario </Text>
+          <Text h1 style={{fontSize:25, marginTop: 10, color:'#ffa726'}} > Formulario </Text>
         </TouchableOpacity>
         <FlatList
           data={datos.especialidades}
-          renderItem={({ item }) => <TouchableOpacity onPress={() => navigate('Formato', { datos: datos, especiali: item.nombre })}><Text>{item.nombre}</Text></TouchableOpacity>}
+          renderItem={({ item }) => <TouchableOpacity onPress={() => navigate('Formato', { datos: datos, especiali: item.nombre })}><Text style={{marginTop:1, color:'#ffa726', fontWeight:'bold'}}> - {(item.nombre).charAt(0).toUpperCase() + (item.nombre).slice(1)}</Text></TouchableOpacity>}
           keyExtractor={({ id }, index) => id}
         />
 
 
-        <Button
-          title="Guardar"
+        <TouchableOpacity style={(styles.guardarUsuario)}
+      
           onPress={() => this._handleSubmit}
-        />
+        >
+        <Text h1 style={{fontSize:30, textAlign:'center'}}> Guardar </Text>
+        </TouchableOpacity>
       </View>
     );
 
@@ -300,11 +311,12 @@ class NotasScreen extends Component {
     const { navigation } = this.props;
     const { navigate } = this.props.navigation;
     return (
-      <View>
-        <TextInput style={{ borderColor: 'gray', borderWidth: 1 }} editable={true} onChangeText={(text) => this.setState({ text })}
+      <View style={(styles.usuarioContainer)}>
+      <Text h1 style={{ fontSize:40, textAlign:'center'}}> Notas Adicionales</Text>
+        <TextInput style={(styles.textInputNotas)} editable={true} onChangeText={(text)  => this.setState({ text })}
           value={this.state.text} />
-        <TouchableOpacity onPress={() => this._handleSubmit()}>
-          <Text>
+        <TouchableOpacity style={(styles.guardarNota)}onPress={() => this._handleSubmit()}>
+          <Text h1 style={{fontSize:30, textAlign:'center'}}>
             Guardar
           </Text>
         </TouchableOpacity>
@@ -339,12 +351,12 @@ class FormularioScreen extends Component {
     const User = t.struct({
       DificultadesConLaDucha: t.String,
       VaAlBañoSolo: t.String,
-      ManiasConSuVestuario: t.String,
-      ManiasConSusUñas: t.String,
-      ManiasConSuCabello: t.String,
-      ManiaConSuLavadoDeDientes: t.String,
+      ManíasConSuVestuario: t.String,
+      ManíasConSusUñas: t.String,
+      ManíasConSuCabello: t.String,
+      ManíaConSuLavadoDeDientes: t.String,
       ConductasAgresivas: t.String,
-      ConductasPasivasODeDepresión: t.String,
+      ConductasPasivas_O_DeDepresión: t.String,
       SaleSinAutorizaciónDeLaFundación: t.String,
       ActividadesDeLaFundaciónEnQueAyuda: t.String,
       TomaSiesta: t.String,
@@ -354,7 +366,7 @@ class FormularioScreen extends Component {
       SillaDeRuedas: t.String,
       Bastón: t.String,
       EncargadoDeCitasMédicas: t.String,
-      NecesitaAcompañamientoALasCitas: t.String,
+      NecesitaAcompañamientoA_LasCitas: t.String,
       ParticularidadesConLaAlimentación: t.String,
     });
     return (
@@ -364,8 +376,9 @@ class FormularioScreen extends Component {
           backgroundColor: '#00701a',
           elevation: 4
         }} />
-        <Text h1>ACTIDUDES</Text>
-        <ScrollView>
+        <Text h1 style={{ fontSize:40}}>ACTIDUDES</Text>
+        <ScrollView style={{width:width}}> 
+          <View style={(styles.formAgregar)}>
           <Form
             ref={c => this._form = c}
             type={User}
@@ -374,6 +387,7 @@ class FormularioScreen extends Component {
             title="Guardar Información"
             onPress={() => this._handleSubmit(User)}
           />
+          </View>
         </ScrollView>
       </View>
     );
@@ -383,7 +397,8 @@ class FormularioScreen extends Component {
 class ExamenesScreen extends Component {
 
   static navigationOptions = {
-    title: "Examenes"
+    title: "Examenes",
+    header: null,
   }
 
   constructor(props) {
@@ -458,7 +473,7 @@ class CamaraScreen extends Component {
             ? <Text style={{ color: '#fff' }}>
               Camera permission is not granted
                   </Text>
-            : <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            : <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#ffe0b2' }}>
               <FlatList
                 data={imags}
                 renderItem={({ item }) => <ScrollView><Image
@@ -474,7 +489,7 @@ class CamaraScreen extends Component {
                 }
                 keyExtractor={({ id }, index) => id}
               />
-              <Button
+              <Button style={{color:'#000000'}}
                 title="Pick an image from camera roll"
                 onPress={this._pickImage}
               />
@@ -487,7 +502,7 @@ class CamaraScreen extends Component {
         <StatusBar hidden />
 
         <TouchableOpacity onPress={() => this.guardar()} >
-          <Text>
+          <Text style={{fontSize:25}}>
             Guardar
           </Text>
         </TouchableOpacity>
@@ -620,10 +635,12 @@ class MedicamentosScreen extends Component {
     var medicamentos = Object.values(datos.medicamentos);
 
     return (
-      <View>
+      <View style={(styles.medicamentosContainer)}>
+      <Text h1 style={{fontSize:45, marginTop: height/24, textAlign:'center'}} >Medicamentos</Text>
+      <Text h1 style={{textAlign:'center', fontWeight:'bold'}}> "Medicamento" , "Dosis"</Text>
         <FlatList
           data={medicamentos}
-          renderItem={({ item }) => <Text>{item.nombre}, {item.dosis}</Text>}
+          renderItem={({ item }) => <Text style={{textAlign:'center', marginTop:height/40}}>{item.nombre}, {item.dosis}</Text>}
           keyExtractor={({ id }, index) => id}
         />
         {this.state.textInput.map((value, index) => {
@@ -661,22 +678,23 @@ class UsuarioScreen extends Component {
 
     return (
       <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+        style={(styles.usuarioContainer)}>
         <ToolbarAndroid style={{
           height: StatusBar.currentHeight,
           backgroundColor: '#00701a',
           elevation: 4
         }} />
-        <Text>Paciente</Text>
-        <Text>Nombre: {JSON.stringify(datos.Nombre)}</Text>
-        <Text>Edad: {JSON.stringify(datos.Edad)}</Text>
-        <Text>EPS: {JSON.stringify(datos.EPS)}</Text>
-        <Text>Cedula: {JSON.stringify(datos.Cedula)}</Text>
-        <Button title="Editar Paciente" onPress={() => navigate('EditarUsuario', { datos: datos })}></Button>
+
+        <View style={(styles.viewUsuario)}>
+        <Text h1 style={{fontSize:45, marginTop: height/24}}>Paciente</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/8}}>Nombre: {JSON.stringify(datos.Nombre)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>Edad: {JSON.stringify(datos.Edad)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>EPS: {JSON.stringify(datos.EPS)}</Text>
+        <Text h1 style={{fontSize:20, marginTop: height/24}}>Cedula: {JSON.stringify(datos.Cedula)}</Text>
+        <TouchableOpacity style={(styles.botonEditarUsuario)} onPress={() => navigate('EditarUsuario', { datos: datos })}>
+          <Text h1 style={{fontSize:30, textAlign:'center'}}>Editar</Text>
+        </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -721,10 +739,12 @@ const Pantallas = StackNavigator(
       }, {
           tabBarPosition: 'bottom',
           tabBarOptions: {
-            activeTintColor: '#10f43b',
-            backgroundColor: '#058222',
+            activeTintColor: '#ffe0b2',
+            backgroundColor: '#ffcc80',
+            labelStyles:{ fontSize:15 },
             style: {
-              backgroundColor: '#058222'
+              backgroundColor: '#ffcc80',
+              fontSize:10
             }
           }
         })
@@ -739,7 +759,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffe0b2',
+    width:width,
+    height:height
   },
   bottomBar: {
     position: 'absolute',
@@ -766,5 +788,94 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     fontSize: 18,
   },
+  inicio: {
+    backgroundColor: '#ffe0b2',
+    height:height,
+    width:width
+  },
+  btnInicio:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+    borderRadius: 10,
+    borderWidth: 4,
+    borderColor: '#ca9b52',
+    width:width/2 + width/6,
+    marginTop: 50,
+    height:50
+    
+
+  },
+  botonesInicio:{
+    marginTop:width/2 - width/6,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  iconologo:{
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  formAgregar:{
+    marginTop:width/6,
+    width:width -  2*width/12,
+    marginLeft:width/18
+  },
+  botonAgregarUsuario:{
+    marginTop: 35,
+    
+    borderRadius: 10,
+    borderWidth: 4,
+    borderColor: '#ffcc80',
+    height:45,
+    width:width/3 ,
+    marginLeft:width/3-width/13
+  },
+  usuarioContainer:{
+    width:width
+    , height:height,
+    backgroundColor:'#ffe0b2',
+  },
+  viewUsuario:{
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  botonEditarUsuario: {
+    marginTop: height/5,
+    
+    borderRadius: 10,
+    borderWidth: 4,
+    borderColor: '#ffcc80',
+    width:width/4,
+    marginLeft:width/3-width/3
+
+  },
+  guardarUsuario:{
+    marginTop: -height/5,
+    
+    borderRadius: 10,
+    borderWidth: 4,
+    borderColor: '#ffcc80',
+  },
+  medicamentosContainer:{
+    width:width
+    , height:height,
+    backgroundColor:'#ffe0b2',
+  },
+  guardarNota:{
+    marginTop: height/5,
+    width:width/3,
+    borderRadius: 10,
+    borderWidth: 4,
+    borderColor: '#ffcc80',
+    marginLeft:width/3
+  },
+  textInputNotas:{
+    marginTop:height/30,
+    fontSize:20,
+    borderColor:'#ffcc80',
+    borderWidth:4,
+    width:width - width/24
+    , marginLeft: width/48
+  }
 });
 export default Pantallas;
