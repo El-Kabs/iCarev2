@@ -31,6 +31,7 @@ import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 var config = {
@@ -145,7 +146,7 @@ class LoginScreen extends Component {
           <Text h1 style={{fontSize:25 , textAlign:'center'}}> Agregar Usuario</Text>
         </TouchableOpacity>
         <TouchableOpacity style={(styles.btnInicio)} onPress={() => navigate('Home')}>
-          <Text h1 style={{fontSize:25}}>Cámara</Text>
+          <Text h1 style={{fontSize:25}}>Escanear QR</Text>
         </TouchableOpacity>
         
         </View>
@@ -260,7 +261,7 @@ class EditarUsuarioScreen extends Component {
               borderBottomWidth: 1,
             }}
           />
-          <Text h1 style={{fontSize:20}}> Especialidades: </Text>
+          <Text h1 style={{fontSize:20}}> Otros: </Text>
           <FlatList
             data={datos.especialidades}
             renderItem={({ item }) => <TouchableOpacity onPress={() => navigate('Formato', { datos: datos, especiali: item.nombre })}><Text style={{marginTop:1, color:'#ffa726', fontWeight:'bold'}}> - {(item.nombre).charAt(0).toUpperCase() + (item.nombre).slice(1)}</Text></TouchableOpacity>}
@@ -387,8 +388,8 @@ class FormularioScreen extends Component {
       ManíaConSuLavadoDeDientes: t.String,
       ConductasAgresivas: t.String,
       ConductasPasivas_O_DeDepresión: t.String,
-      SaleSinAutorizaciónDeLaFundación: t.String,
-      ActividadesDeLaFundaciónEnQueAyuda: t.String,
+      SaleSinAutorización: t.String,
+      ActividadesEnQueAyuda: t.String,
       TomaSiesta: t.String,
       TieneConflictosCon: t.String,
       EsFácilLevantarlo: t.String,
@@ -843,15 +844,22 @@ const Pantallas = StackNavigator(
       screen: TabNavigator({
         Notas: {
           screen: NotasScreen,
-          activeTintColor: '#e91e63'
+          activeTintColor: '#e91e63',
+          tabBarIcon: ({ tintColor }) => (
+            <Icon name="book" size={30} color="#900" />
+          )
         },
         Examenes: {
           screen: CamaraScreen,
-          activeTintColor: '#e91e63'
+          activeTintColor: '#e91e63',
+          tabBarIcon: ({ tintColor }) => (
+            <Icon name="camera" size={30} color="#900" />
+          )
         }
       }, {
           tabBarPosition: 'bottom',
           tabBarOptions: {
+            showIcon: true, 
             activeTintColor: '#ffe0b2',
             backgroundColor: '#ffcc80',
             labelStyles:{ fontSize:15 },
