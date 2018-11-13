@@ -343,7 +343,7 @@ class FormularioScreen extends Component {
     } else {
       firstKey = Object.keys(datos.formato)[0];
     }
-    var ruta = "/json/" + datos.llave + "/formato/" + firstKey
+    var ruta = "/json/" + datos.llave + "/formato/" 
     console.log(ruta)
     firebase.database().ref(ruta).set({ formato: value });
   }
@@ -361,20 +361,14 @@ class FormularioScreen extends Component {
     const Form = t.form.Form;
     const formato = datos.formato;
     var firstKey = "";
-    console.log(datos.formato)
-    if (datos.formato === undefined) {
-      firstKey = ""
-    }
-    else {
+    if (datos.formato !== undefined) {
+      console.log("entró aca: 22131")
       firstKey = Object.keys(datos.formato)[0];
-    }
-    console.log(datos.formato[firstKey])
-    var Vinicial = ""
-    if (firstKey !== "") {
       Vinicial = datos.formato[firstKey];
     }
-    console.log(Vinicial)
-    console.log("Formulario")
+    else {
+      Vinicial = {}
+    }
     const User = t.struct({
       DificultadesConLaDucha: t.String,
       VaAlBañoSolo: t.String,
@@ -403,7 +397,7 @@ class FormularioScreen extends Component {
           backgroundColor: '#00701a',
           elevation: 4
         }} />
-        <Text h1 style={{ fontSize: 40 }}>ACTIDUDES</Text>
+        <Text h1 style={{ fontSize: 40 }}>ACTITUDES</Text>
         <ScrollView style={{ width: width }}>
           <View style={(styles.formAgregar)}>
             <Form
@@ -727,14 +721,20 @@ class MedicamentosScreen extends Component {
         var arr = Object.keys(snap);
         console.log(arr)
         var llavesota = ""
-        for (var i = 0; i < arr.length; i++) {
+        var done=false
+        for (var i = 0; i < arr.length && !done; i++) {
           console.log("epa: "+arr[i])
           var jueputa = ""+arr[i]
-          console.log( snap[jueputa])
+          
           var objetico = snap[jueputa]
+          console.log(objetico.nombre)
           if (objetico.nombre === item.nombre)
           {
-            delete snap[arr[i]]
+            console.log(objetico.nombre + "    jueputa ome           " + item.nombre)
+            console.log(jueputa)
+            console.log(snap[arr[i]])
+            delete snap[jueputa]
+            done=true
           }
           llavesota = jueputa;
         }
@@ -779,7 +779,14 @@ class MedicamentosScreen extends Component {
     const datos = navigation.getParam('datos', '{"id": 0}');
     let { image } = this.state;
     const especialidad = this.props.navigation.getParam('especiali', '{"id": 0}')
-    var medicamentos = Object.values(datos.medicamentos);
+    console.log(datos.medicamentos)
+    if(datos.medicamentos === null || datos.medicamentos === undefined){
+      
+    }
+    else{
+      var medicamentos = Object.values(datos.medicamentos);
+    }
+
 
     return (
       <View style={(styles.medicamentosContainer)}>

@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 2585,
-  "expoServerNgrokUrl": "https://sj-k47.kabs99.icarev2.exp.direct",
-  "packagerNgrokUrl": "https://packager.sj-k47.kabs99.icarev2.exp.direct",
-  "ngrokPid": 2695
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
